@@ -216,7 +216,7 @@ describe('Tests e2e', () => {
 
   describe('EmailResolver', () => {
     describe('[Query] email', () => {
-      it.skip(`[10] Devrait retourner l'email connu en base de données`, () => {
+      it(`[10] Devrait retourner l'email connu en base de données`, () => {
         const { userId, ...email } = email3;
 
         return request(app.getHttpServer())
