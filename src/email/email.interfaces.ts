@@ -1,6 +1,7 @@
 export type IEmail = {
   id: string;
   address: string;
+  userId?: string;
 };
 
 export type IEmailFilters = {
@@ -8,3 +9,5 @@ export type IEmailFilters = {
 };
 
 export type EmailId = IEmail['id'];
+
+export type IAddEmail = Omit<IEmail, 'id'>;
