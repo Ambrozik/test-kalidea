@@ -53,7 +53,7 @@ export class UserResolver {
       }
 
       if (filters.address.in?.length > 0) {
-        where.address = where.address || In(filters.address.in);
+        where.address = In(filters.address.in);
       }
     }
 

@@ -5,10 +5,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmailId, IAddEmail, IEmail } from './email.interfaces';
-import { IUser } from 'src/user/user.interfaces';
-import { UserService } from 'src/user/user.service';
-import { resolve } from 'path';
-import { UserIdArgs } from 'src/user/user.types';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class EmailService {
@@ -20,6 +17,18 @@ export class EmailService {
 
   get(id: EmailId): Promise<IEmail> {
     return this.emailRepository.findOneBy({ id: Equal(id) });
+  }
+
+  getWithOption(where: any) {
+    return this.emailRepository.find({
+      where,
+      order: { address: 'asc' },
+    });
+  }
+
+  async getUser(id: string) {
+    const user = await this.userService.get(id);
+    return user;
   }
 
   async add(email: IAddEmail) {
@@ -35,18 +44,5 @@ export class EmailService {
         return Error('ne peux etre ajouté');
       }
     }
-
-    //   return this.userService.get(email.userId).then((user) => {
-    //     if (user.status == 'active') {
-    //       this.emailRepository
-    //         .insert({
-    //           ...email,
-    //         })
-    //         .then((r) => r.identifiers[0].ID);
-    //     } else {
-    //       return resolve("le user n'est pas active");
-    //     }
-    //   });
-    // }
   }
 }

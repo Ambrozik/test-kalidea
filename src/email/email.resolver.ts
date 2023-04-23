@@ -12,6 +12,8 @@ import { AddEmail, EmailFiltersArgs, UserEmail } from './email.types';
 import { User } from '../user/user.types';
 import { EmailService } from './email.service';
 import { EmailId } from './email.interfaces';
+import { Equal, FindOptionsWhere } from 'typeorm';
+import { EmailEntity } from './email.entity';
 
 @Resolver(() => UserEmail)
 export class EmailResolver {
@@ -23,12 +25,19 @@ export class EmailResolver {
 
   @Query(() => [UserEmail], { name: 'emailsList' })
   async getEmails(@Args() filters: EmailFiltersArgs): Promise<UserEmail[]> {
-    throw new NotImplementedException();
+    const where: FindOptionsWhere<EmailEntity> = {};
+
+    if (filters.address) {
+      if (filters.address.equal) {
+        where.address = Equal(filters.address.equal);
+      }
+    }
+    return this._service.getWithOption(where);
   }
 
   @ResolveField(() => User, { name: 'user' })
   async getUser(@Parent() parent: UserEmail): Promise<User> {
-    throw new NotImplementedException();
+    return this._service.getUser(parent.userId);
   }
 
   @Mutation(() => ID)
