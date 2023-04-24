@@ -1,4 +1,4 @@
-import { NotImplementedException } from '@nestjs/common';
+import { BadRequestException, NotImplementedException } from '@nestjs/common';
 import { Mutation } from '@nestjs/graphql';
 import {
   Args,
@@ -11,7 +11,6 @@ import {
 import { AddEmail, EmailFiltersArgs, UserEmail } from './email.types';
 import { User } from '../user/user.types';
 import { EmailService } from './email.service';
-import { EmailId } from './email.interfaces';
 import { Equal, FindOptionsWhere } from 'typeorm';
 import { EmailEntity } from './email.entity';
 
@@ -41,7 +40,7 @@ export class EmailResolver {
   }
 
   @Mutation(() => ID)
-  addEmail(@Args() email: AddEmail): Promise<EmailId> {
+  addEmail(@Args() email: AddEmail) {
     return this._service.add(email);
   }
 }

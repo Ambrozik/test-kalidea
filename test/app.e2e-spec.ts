@@ -249,7 +249,7 @@ describe('Tests e2e', () => {
       });
     });
 
-    describe('[FieldResolver] user', () => {
+    describe('[FieldResolver] email', () => {
       it(`[12] Devrait retourner l'utilisateur de l'email`, () => {
         return request(app.getHttpServer())
           .post('/graphql')
@@ -260,6 +260,49 @@ describe('Tests e2e', () => {
           .expect((res) => {
             expect(res.body.errors?.[0]?.message).not.toBe('Not Implemented');
             expect(res.body.data?.emailsList[0].user.id).toBe(knownUserId);
+          });
+      });
+    });
+    describe('[Mutation] user', () => {
+      it(`[13] Devrait pouvoir créer un user (email  valide)`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation { addEmail(address:"lolol@hotmail.com", userId: "${knownUserId}")}`,
+          })
+          .expect(200);
+      });
+    });
+    describe('[Mutation] user', () => {
+      it(`[14] Devrait ne pas pouvoir créer un user (email non valide)`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation{addEmail(address:"lololo.com", userId: "0f9fcea9-f618-44e5-b182-0e3c83586f8b")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain('address must be an email');
+          });
+      });
+    });
+    describe('[Mutation] user', () => {
+      it(`[15] Devrait ne pas pouvoir créer un email puisque inactive`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation{deactivateUser(userId: userId:"${knownUserId}")}`,
+          })
+          .send({
+            query: `mutation {addEmail(address:"lolol@hotmail.com",userId:"${knownUserId}")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain('ne peux etre ajouté');
           });
       });
     });

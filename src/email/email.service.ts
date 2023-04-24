@@ -1,5 +1,10 @@
 import { ID } from '@nestjs/graphql';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { EmailEntity } from './email.entity';
 import { Equal, Repository } from 'typeorm';
 
@@ -41,7 +46,7 @@ export class EmailService {
         const emailId = addedEmail.identifiers[0].id;
         return emailId;
       } else {
-        return Error('ne peux etre ajouté');
+        throw new BadRequestException('ne peux etre ajouté');
       }
     }
   }

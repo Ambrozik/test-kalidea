@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { IUser, IAddUser } from './user.interfaces';
-import { Type } from '@nestjs/common';
 
 /**
  * Type de sortie GraphQL d'un utilisateur pour les récupérations
