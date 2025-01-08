@@ -293,17 +293,23 @@ describe('Tests e2e', () => {
         return request(app.getHttpServer())
           .post('/graphql')
           .send({
-            query: `mutation{deactivateUser(userId: userId:"${knownUserId}")}`,
+            query: `mutation {
+              deactivateUser(userId: "${knownUserId}")
+            }`
           })
+          .then(() => {
+           return request(app.getHttpServer())
+          .post('/graphql')
           .send({
-            query: `mutation {addEmail(address:"lolol@hotmail.com",userId:"${knownUserId}")}`,
+              query: `mutation {addEmail(address:"lolol@hotmail.com",userId:"${knownUserId}")}`,
+            })
+            .expect((res) => {
+                expect(
+                  res.body.errors?.[0].extensions?.originalError?.message,
+                ).toContain('ne peux etre ajouté');
+              });
           })
-          .expect(200)
-          .expect((res) => {
-            expect(
-              res.body.errors?.[0].extensions?.originalError?.message,
-            ).toContain('ne peux etre ajouté');
-          });
+         
       });
     });
   });
